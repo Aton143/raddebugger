@@ -872,8 +872,8 @@ read_only global String8 pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_pr
 //~ rjf: Parsed Info Types
 
 //- antoniom: ARM64EC code ranges
-typedef struct PE_HybridCodeRanges PE_HybridCodeRanges;
-struct PE_HybridCodeRanges
+typedef struct PE_HybridCodeRange PE_HybridCodeRange;
+struct PE_HybridCodeRange
 {
   Rng1U64 range;
   Arch    arch;

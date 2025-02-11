@@ -1181,13 +1181,13 @@ CV_Regx64Enum;
   X(FPSR,  220, fpsr, 0, 4)
 
 typedef U16 CV_Regarm64;
-typedef enum CV_Regarmx64Enum
+typedef enum CV_Regarm64Enum
 {
 #define X(CVN,C,RDN,BP,BZ) CV_Regarm64_##CVN = C,
   CV_Reg_ARM64_XList(X)
 #undef X
 }
-CV_Regx64Enum;
+CV_Regarm64Enum;
 
 #define CV_SignatureXList(X) \
   X(C6,       0)             \

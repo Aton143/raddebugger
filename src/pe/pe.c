@@ -594,6 +594,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         tls_header.characteristics   = (U64)tls_header32.characteristics;
       }break;
       case COFF_MachineType_X64:
+      case COFF_MachineType_ARM64:
       {
         str8_deserial_read_struct(data, tls_header_frng.min, &tls_header);
       }break;
@@ -1387,6 +1388,7 @@ pe_tls_from_data(Arena              *arena,
         callback_addrs[i] = (U64)src[i];
       }
     } break;
+    case COFF_MachineType_ARM64:
     case COFF_MachineType_X64: {
       str8_deserial_read_struct(raw_tls, 0, &header64);
 

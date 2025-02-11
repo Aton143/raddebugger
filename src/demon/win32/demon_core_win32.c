@@ -1590,7 +1590,7 @@ dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
       struct JIT_DEBUG_INFO
       {
         DWORD dwSize;
-        DWORD dwProcessorArchitecture;
+        DWORD dwProcessorArch;
         DWORD dwThreadID;
         DWORD dwReserved0;
         ULONG64 lpExceptionAddress;
@@ -1863,6 +1863,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               {NotImplemented;}break;
 
               case Arch_x64:
+              case Arch_x86:
               {
                 trap_swap_bytes[trap_idx] = 0xCC;
                 dmn_process_read(trap->process, r1u64(trap->vaddr, trap->vaddr+1), trap_swap_bytes+trap_idx);
@@ -2832,6 +2833,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               {NotImplemented;}break;
 
               case Arch_x64:
+              case Arch_x86:
               {
                 U8 og_byte = trap_swap_bytes[trap_idx];
                 if(og_byte != 0xCC)
@@ -2847,7 +2849,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 {
                   dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+4), &og_u32);
                 }
-              }
+              }break;
             }
           }
         }
@@ -2873,9 +2875,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
           case Arch_arm64:
           {
             REGS_RegBlockARM64 regs = {0};
-            dmn_thread_read_reg_block(ctrl->single_step_thread, &regs);
+            dmn_thread_read_reg_block(ctrls->single_step_thread, &regs);
             regs.cpsr.u32 &= ~0x200000;
-            dmn_thread_write_reg_block(ctrl->single_step_thread, &regs);
+            dmn_thread_write_reg_block(ctrls->single_step_thread, &regs);
           }
           
           //- rjf: x86/64
@@ -2888,12 +2890,12 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
           }break;
           case Arch_x64:
           {
-            DMN_W32_Context_x64 *x64_ctx = single_step_thread_ctx;
+            DMN_W32_Context_x64 *x64_ctx = (DMN_W32_Context_x64*)single_step_thread_ctx;
             if(!GetThreadContext(thread->handle, (CONTEXT*)x64_ctx))
             {
               single_step_thread_ctx = 0;
             }
-            if(ctx != 0)
+            if(x64_ctx != 0)
             {
               U64 rflags = x64_ctx->EFlags|0x2;
               U64 new_rflags = rflags & ~0x100;

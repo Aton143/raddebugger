@@ -142,10 +142,10 @@ struct DMN_W32_Context_arm64
   ARM64_NT_NEON128 V[32];
   DWORD            Fpcr;
   DWORD            Fpsr;
-  DWORD            Bcr[ARM64_MAX_BREAKPOINTS];
-  DWORD64          Bvr[ARM64_MAX_BREAKPOINTS];
-  DWORD            Wcr[ARM64_MAX_WATCHPOINTS];
-  DWORD64          Wvr[ARM64_MAX_WATCHPOINTS];
+  DWORD            Bcr[8];
+  DWORD64          Bvr[8];
+  DWORD            Wcr[2];
+  DWORD64          Wvr[2];
 };
 
 typedef XSAVE_FORMAT XMM_SAVE_AREA32;
@@ -330,7 +330,7 @@ DWORD64 dmn_w32_stub_GetEnabledXStateFeatures(void) { return(0); }
 
 typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR **ppszThreadDescription);
 typedef VOID   *DMN_W32_LocateXStateFeatureFunctionType(CONTEXT *Context, DWORD FeatureId, DWORD *Length);
-typedef BOOL    DMN_W32_SetXStateFeaturesMaskFunctionType(CONTEXT *Context, DWORD FeatureMask);
+typedef BOOL    DMN_W32_SetXStateFeaturesMaskFunctionType(CONTEXT *Context, DWORD64 FeatureMask);
 typedef BOOL    DMN_W32_GetXStateFeaturesMaskFunctionType(CONTEXT *Context, DWORD64 *FeatureMask);
 typedef DWORD64 DMN_W32_GetEnabledXStateFeaturesFunctionType(void);
 
